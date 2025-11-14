@@ -1,16 +1,12 @@
-# Proxmox Provider Configuration
-proxmox_api_url          = "https://your-proxmox-host:8006/api2/json"
-proxmox_api_token_id     = "terraform@pam!terraform"
-proxmox_api_token_secret = "your-api-token-secret"
-proxmox_tls_insecure     = true
+
 
 # Nginx Proxy Manager Container Configuration
-node = "pve"
+node = "pve1"
 hostname = "nginx-proxy-manager"
-template = "local:vztmpl/debian-12-standard_12.2-1_amd64.tar.zst"
+template = "local:vztmpl/debian-13-standard_13.1-2_amd64.tar.zst"
 password = "nginx-proxy-password"
-ip = "192.168.1.100/24"
-gateway = "192.168.1.1"
+ip = "192.168.0.155/24"
+gateway = "192.168.0.1"
 memory = 1024
 cores = 2
 disk_size = "10G"

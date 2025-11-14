@@ -1,11 +1,12 @@
 terraform {
   required_providers {
     proxmox = {
-      source  = "telmate/proxmox"
-      version = "~> 2.9"
+      source = "Telmate/proxmox"
+      version = "3.0.2-rc05"
     }
   }
 }
+
 
 resource "proxmox_lxc" "container" {
   target_node  = var.target_node

@@ -1,13 +1,11 @@
 terraform {
   required_providers {
     proxmox = {
-      source  = "telmate/proxmox"
-      version = "~> 2.9"
+      source = "Telmate/proxmox"
+      version = "3.0.2-rc05"
     }
   }
-  required_version = ">= 1.0"
 }
-
 provider "proxmox" {
   pm_api_url          = var.proxmox_api_url
   pm_api_token_id     = var.proxmox_api_token_id
