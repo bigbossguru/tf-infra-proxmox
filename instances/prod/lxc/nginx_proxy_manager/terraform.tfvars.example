@@ -1,8 +1,5 @@
-
-
 # Nginx Proxy Manager Container Configuration
-node = "pve1"
-hostname = "nginx-proxy-manager"
+hostname = "nginxproxymanager-terraform"
 template = "local:vztmpl/debian-13-standard_13.1-2_amd64.tar.zst"
 password = "nginx-proxy-password"
 ip = "192.168.0.155/24"

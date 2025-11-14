@@ -12,10 +12,17 @@ on:
           - lxc/cloudflare_tunnel
           - vm/debian
           - vm/windows_tiny10
+      pve_node:
+        description: 'PVE Nodes'
+        required: true
+        type: choice
+        options:
+          - pve1
+          - pve2
       action:
         description: 'Terraform Action'
         required: true
-        default: 'apply'
+        default: 'plan'
         type: choice
         options:
           - plan
@@ -47,6 +54,7 @@ jobs:
           proxmox_api_token_id     = "${{ secrets.PROXMOX_API_TOKEN_ID }}"
           proxmox_api_token_secret = "${{ secrets.PROXMOX_API_TOKEN_SECRET }}"
           proxmox_tls_insecure     = true
+          node                     = ${{ github.event.inputs.pve_node }}
 
           # Service Configuration (copied from terraform.tfvars.example)
           EOF
@@ -57,6 +65,7 @@ jobs:
       - name: Show Configuration
         run: |
           echo "=== Service: ${{ github.event.inputs.service_type }} ==="
+          echo "=== PVE Node: ${{ github.event.inputs.pve_node }} ==="
           echo "=== Action: ${{ github.event.inputs.action }} ==="
           echo "=== Working Directory: $(pwd) ==="
           echo ""
