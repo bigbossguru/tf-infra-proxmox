@@ -1,6 +1,6 @@
 # Windows Tiny10 VM Configuration
 name = "windows-tiny10-terraform"
-template = "local:iso/tiny10-x64-21h2.iso"
+template = "local:iso/tiny10_23h1.iso"
 cores = 2
 memory = 4096
 storage = "local-lvm"
