@@ -45,12 +45,30 @@ resource "proxmox_vm_qemu" "vm" {
       user     = var.user
       password = var.password
       host     = regex("ip=([0-9.]+)", var.ipconfig)[0]
-      timeout  = "5m"
+      timeout  = "15m"
     }
 
     inline = var.enable_provisioning && can(regex("ip=([0-9.]+)", var.ipconfig)) ? [
-      "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do sleep 1; done",
-      "sleep 5"
+      # Test basic connectivity
+      "echo 'VM SSH connection established'",
+
+      # Wait for cloud-init to complete fully
+      "echo 'Waiting for cloud-init to complete...'",
+      "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Cloud-init still running...'; sleep 10; done",
+
+      # Wait for systemd to be ready
+      "sudo systemctl is-system-running --wait || true",
+
+      # Ensure SSH service is running and properly configured
+      "sudo systemctl status ssh 2>/dev/null || sudo systemctl status sshd 2>/dev/null || echo 'SSH service check completed'",
+
+      # Wait for package manager to be available
+      "while sudo fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do echo 'Waiting for package manager to be available...'; sleep 5; done",
+      "while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do echo 'Waiting for dpkg lock...'; sleep 5; done",
+
+      # Ensure system is stable
+      "sleep 15",
+      "echo 'VM initialization completed'"
     ] : []
   }
 
@@ -63,13 +81,17 @@ resource "proxmox_vm_qemu" "vm" {
       user     = var.user
       password = var.password
       host     = regex("ip=([0-9.]+)", var.ipconfig)[0]
-      timeout  = "5m"
+      timeout  = "15m"
     }
 
     inline = var.enable_provisioning && can(regex("ip=([0-9.]+)", var.ipconfig)) ? [
+      "echo 'Starting system update...'",
       "sudo apt-get update",
-      "sudo apt-get upgrade -y",
-      "sudo apt-get install -y curl wget git qemu-guest-agent"
+      "sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y -o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold'",
+      "sudo apt-get install -y curl wget git nano htop qemu-guest-agent",
+      "sudo systemctl enable qemu-guest-agent",
+      "sudo systemctl start qemu-guest-agent",
+      "echo 'System update completed'"
     ] : []
   }
 
@@ -82,7 +104,7 @@ resource "proxmox_vm_qemu" "vm" {
       user     = var.user
       password = var.password
       host     = regex("ip=([0-9.]+)", var.ipconfig)[0]
-      timeout  = "5m"
+      timeout  = "10m"
     }
 
     source      = var.setup_script != "" && var.enable_provisioning && can(regex("ip=([0-9.]+)", var.ipconfig)) ? var.setup_script : "/dev/null"
@@ -98,7 +120,7 @@ resource "proxmox_vm_qemu" "vm" {
       user     = var.user
       password = var.password
       host     = regex("ip=([0-9.]+)", var.ipconfig)[0]
-      timeout  = "5m"
+      timeout  = "20m"
     }
 
     inline = var.setup_script != "" && var.enable_provisioning && can(regex("ip=([0-9.]+)", var.ipconfig)) ? [
