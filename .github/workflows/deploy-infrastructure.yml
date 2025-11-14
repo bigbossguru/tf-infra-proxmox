@@ -54,7 +54,7 @@ jobs:
           proxmox_api_token_id     = "${{ secrets.PROXMOX_API_TOKEN_ID }}"
           proxmox_api_token_secret = "${{ secrets.PROXMOX_API_TOKEN_SECRET }}"
           proxmox_tls_insecure     = true
-          node                     = ${{ github.event.inputs.pve_node }}
+          node                     = "${{ github.event.inputs.pve_node }}"
 
           # Service Configuration (copied from terraform.tfvars.example)
           EOF
