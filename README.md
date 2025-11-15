@@ -1,4 +1,5 @@
 # Proxmox Infrastructure as Code
+[![Deploy Infrastructure](https://github.com/bigbossguru/tf-infra-proxmox/actions/workflows/deploy-infrastructure.yml/badge.svg?branch=main)](https://github.com/bigbossguru/tf-infra-proxmox/actions/workflows/deploy-infrastructure.yml)
 
 A streamlined Terraform solution for deploying and managing infrastructure on Proxmox with individual service isolation and automated deployment via GitHub Actions.
 
